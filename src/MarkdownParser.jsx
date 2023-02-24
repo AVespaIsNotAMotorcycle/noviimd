@@ -18,12 +18,13 @@ function convertHeaderAltSyntax(lines) {
 }
 
 function interpretHeader(line, index) {
-  if (line.search(/^[#]{6}/) !== -1) { return [['h6', line.substring(6)]]; }
-  if (line.search(/^[#]{5}/) !== -1) { return [['h5', line.substring(5)]]; }
-  if (line.search(/^[#]{4}/) !== -1) { return [['h4', line.substring(4)]]; }
-  if (line.search(/^[#]{3}/) !== -1) { return [['h3', line.substring(3)]]; }
-  if (line.search(/^[#]{2}/) !== -1) { return [['h2', line.substring(2)]]; }
-  if (line.search(/^[#]{1}/) !== -1) { return [['h1', line.substring(1)]]; }
+  const preheader = ['end-para', ''];
+  if (line.search(/^[#]{6}/) !== -1) { return [preheader, ['h6', line.substring(6)]]; }
+  if (line.search(/^[#]{5}/) !== -1) { return [preheader, ['h5', line.substring(5)]]; }
+  if (line.search(/^[#]{4}/) !== -1) { return [preheader, ['h4', line.substring(4)]]; }
+  if (line.search(/^[#]{3}/) !== -1) { return [preheader, ['h3', line.substring(3)]]; }
+  if (line.search(/^[#]{2}/) !== -1) { return [preheader, ['h2', line.substring(2)]]; }
+  if (line.search(/^[#]{1}/) !== -1) { return [preheader, ['h1', line.substring(1)]]; }
   if (line.search(/^[ ]*[=]+[= \r\n]*$/) !== -1) { return [['h1-alt', '']] }
   if (line.search(/^[ ]*[-]+[- \r\n]*$/) !== -1) { return [['h2-alt', '']] }
   return null;
@@ -78,9 +79,11 @@ function processIntertags(intertags) {
         tags.push(condenseParagraph(intertags.splice(0, index), index));
         break;
       case 'h2-alt':
+        tags.push(condenseParagraph(intertags.splice(0, index - 1), index - 1));
         tags.push(<h2 key={`h2-${index - 1}`}>{intertags[index - 1][1]}</h2>);
         break;
       case 'h1-alt':
+        tags.push(condenseParagraph(intertags.splice(0, index - 1), index - 1));
         tags.push(<h1 key={`h1-${index - 1}`}>{intertags[index - 1][1]}</h1>);
         break;
       case 'h6':
@@ -113,7 +116,9 @@ function MarkdownParser({ md }) {
   let intertags = [];
   lines.forEach((line, index) => {
     const linetags = interpretLine(line, index);
-    linetags.forEach((linetag) => { intertags.push(linetag); });
+    linetags.forEach((linetag) => {
+      intertags.push(linetag);
+    });
   });
   intertags.push(['end-para', ''])
   return processIntertags(intertags);
