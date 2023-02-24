@@ -39,14 +39,33 @@ function interpretPara(line, index) {
   return null;
 }
 
+function interpretEmphasis(line, index) {
+  if (line.search(/(__|\*\*)/) !== -1) {
+    const boldlineStrings = line.replace(/(__|\*\*)/g, '__strong__').split('__');
+    const boldlineTags = [];
+    let opening = true;
+    boldlineStrings.forEach((string, index) => {
+      if (string === 'strong') {
+        if (opening) { opening = false; return }
+        boldlineTags[boldlineTags.length - 1][0] = 'strong';
+        opening = true;
+        return;
+      }
+      boldlineTags.push(['text', string]);
+    });
+    return boldlineTags;
+  }
+  return null;
+}
+
 function interpretLine(line, index, flags) {
   if (interpretHeader(line, index)) { return interpretHeader(line, index); }
   if (interpretPara(line, index)) { return interpretPara(line, index); }
-
+  if (interpretEmphasis(line, index)) { return interpretEmphasis(line, index); }
   return [['text', line]];
 }
 
-const PARA_CONTENT = ['text', 'br'];
+const PARA_CONTENT = ['text', 'br', 'strong'];
 function condenseParagraph(tags, index) {
   const lines = [];
   let startIndex = index - 1;
@@ -57,6 +76,8 @@ function condenseParagraph(tags, index) {
   ) {
     const line = tags[i];
     switch (line[0]) {
+      case 'strong':
+        lines.push(<strong key={`strong-${i}`}>{line[1]}</strong>)
       case 'text':
         lines.push(line[1]);
         break;
