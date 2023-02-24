@@ -4,6 +4,9 @@ A markdown parser for React. Implementing the syntax defined at https://www.mark
 - [X] Paragraphs
 - [X] Line breaks
 - [ ] Emphasis
+  - [X] Bold text
+  - [ ] Italic text
+  - [ ] Bold and italic text
 - [ ] Blockquotes
 - [ ] Lists
 - [ ] Code
