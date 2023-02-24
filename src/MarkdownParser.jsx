@@ -55,6 +55,21 @@ function interpretEmphasis(line, index) {
     });
     return boldlineTags;
   }
+  if (line.search(/(_|\*)/) !== -1) {
+    const boldlineStrings = line.replace(/(_|\*)/g, '__em__').split('__');
+    const boldlineTags = [];
+    let opening = true;
+    boldlineStrings.forEach((string, index) => {
+      if (string === 'em') {
+        if (opening) { opening = false; return }
+        boldlineTags[boldlineTags.length - 1][0] = 'em';
+        opening = true;
+        return;
+      }
+      boldlineTags.push(['text', string]);
+    });
+    return boldlineTags;
+  }
   return null;
 }
 
@@ -65,7 +80,7 @@ function interpretLine(line, index, flags) {
   return [['text', line]];
 }
 
-const PARA_CONTENT = ['text', 'br', 'strong'];
+const PARA_CONTENT = ['text', 'br', 'strong', 'em'];
 function condenseParagraph(tags, index) {
   const lines = [];
   let startIndex = index - 1;
@@ -76,8 +91,12 @@ function condenseParagraph(tags, index) {
   ) {
     const line = tags[i];
     switch (line[0]) {
+      case 'em':
+        lines.push(<em key={`em-${i}`}>{line[1]}</em>);
+        break;
       case 'strong':
         lines.push(<strong key={`strong-${i}`}>{line[1]}</strong>)
+        break;
       case 'text':
         lines.push(line[1]);
         break;
