@@ -12,3 +12,4 @@ A markdown parser for React. Implementing the syntax defined at https://www.mark
 - [ ] Images
 - [ ] Escaping characters
 - [ ] HTML
+  - [X] <br> tags supported
