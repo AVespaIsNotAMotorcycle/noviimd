@@ -40,36 +40,35 @@ function interpretPara(line, index) {
 }
 
 function interpretEmphasis(line, index) {
-  if (line.search(/(__|\*\*)/) !== -1) {
-    const boldlineStrings = line.replace(/(__|\*\*)/g, '__strong__').split('__');
-    const boldlineTags = [];
-    let opening = true;
-    boldlineStrings.forEach((string, index) => {
-      if (string === 'strong') {
-        if (opening) { opening = false; return }
-        boldlineTags[boldlineTags.length - 1][0] = 'strong';
-        opening = true;
-        return;
+  let markedLine = line;
+  markedLine = markedLine.replace(/(__|\*\*)/g, '$!ST!$');
+  markedLine = markedLine.replace(/(_|\*)/g, '$!EM!$');
+  const segments = markedLine.split('$');
+  const tags = [];
+  let inStr = false;
+  let inEm = false;
+  let lastText = '';
+  segments.forEach((seg, index) => {
+    if (seg === '!ST!' || seg === '!EM!') {
+      if (inStr && inEm) {
+        tags.push(['stem', lastText]);
       }
-      boldlineTags.push(['text', string]);
-    });
-    return boldlineTags;
-  }
-  if (line.search(/(_|\*)/) !== -1) {
-    const boldlineStrings = line.replace(/(_|\*)/g, '__em__').split('__');
-    const boldlineTags = [];
-    let opening = true;
-    boldlineStrings.forEach((string, index) => {
-      if (string === 'em') {
-        if (opening) { opening = false; return }
-        boldlineTags[boldlineTags.length - 1][0] = 'em';
-        opening = true;
-        return;
+      if (inStr && !inEm) {
+        tags.push(['st', lastText]);
       }
-      boldlineTags.push(['text', string]);
-    });
-    return boldlineTags;
-  }
+      if (!inStr && inEm) {
+        tags.push(['em', lastText]);
+      }
+      if (!inStr && !inEm) {
+      }
+      if (seg === '!EM!') { inEm = !inEm; }
+      if (seg === '!ST!') { inStr = !inStr;}
+    }
+    else {
+      lastText = seg;
+    }
+  });
+  if (tags.length > 0) { return tags; }
   return null;
 }
 
@@ -80,7 +79,7 @@ function interpretLine(line, index, flags) {
   return [['text', line]];
 }
 
-const PARA_CONTENT = ['text', 'br', 'strong', 'em'];
+const PARA_CONTENT = ['text', 'br', 'stem', 'st', 'em'];
 function condenseParagraph(tags, index) {
   const lines = [];
   let startIndex = index - 1;
@@ -91,10 +90,13 @@ function condenseParagraph(tags, index) {
   ) {
     const line = tags[i];
     switch (line[0]) {
+      case 'stem':
+        lines.push(<em key={`em-${i}`}><strong>{line[1]}</strong></em>);
+        break;
       case 'em':
         lines.push(<em key={`em-${i}`}>{line[1]}</em>);
         break;
-      case 'strong':
+      case 'st':
         lines.push(<strong key={`strong-${i}`}>{line[1]}</strong>)
         break;
       case 'text':

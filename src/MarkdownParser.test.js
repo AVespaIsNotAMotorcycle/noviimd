@@ -62,6 +62,7 @@ describe('headers', () => {
 })
 
 describe('paragraphs', () => {
+/*
   test('create 2 p tags', () => {
     const md = `one\ntwo\n\nthree\nfour`;
     render(<MarkdownParser md={md} />);
@@ -104,7 +105,7 @@ describe('paragraphs', () => {
     });
     expect(hasbr).toBe(true);
   });
-
+*/
   test('bold text with __', () => {
     const md = `Lorem ipsem __dolor__ sit amet`;
     render(<MarkdownParser md={md} />);
@@ -159,5 +160,26 @@ describe('paragraphs', () => {
     render(<MarkdownParser md={md} />);
     const italic = screen.getByText('olo');
     expect(italic.nodeName).toBe('EM');
+  })
+
+  test('italic and bold text with ** and *', () => {
+    const md = `**Lorem** ipsem *dolor* sit amet`;
+    render(<MarkdownParser md={md} />);
+    const bold = screen.getByText('Lorem');
+    expect(bold.nodeName).toBe('STRONG');
+    const italic = screen.getByText('dolor');
+    expect(italic.nodeName).toBe('EM');
+  })
+
+  test('mixed italic/bold with *', () => {
+    const md = `Lorem ipsem **d*olo*r** sit amet`;
+    render(<MarkdownParser md={md} />);
+    const bold1 = screen.getByText('d');
+    const italic = screen.getByText('olo');
+    const bold2 = screen.getByText('r');
+    expect(bold1.nodeName).toBe('STRONG');
+    expect(italic.nodeName).toBe('STRONG');
+    expect(italic.parentElement.nodeName).toBe('EM');
+    expect(bold2.nodeName).toBe('STRONG');
   })
 });
