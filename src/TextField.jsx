@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './TextField.css';
 
 function TextField({
   onChange,
