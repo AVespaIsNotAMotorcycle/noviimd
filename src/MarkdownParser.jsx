@@ -19,9 +19,9 @@ function interpretHeader(line) {
 
 function interpretPara(line) {
   if (line.search(/^\s*$/) !== -1) { return [['end-para', '']]; }
-  if (line.search(/[  ]$/) !== -1
-     || line.search(/[<br>]$/) !== -1) {
-    return [['text', line], ['br', '']];
+  if (line.search(/( ){2}$/) !== -1
+     || line.search(/(<br>)$/) !== -1) {
+    return [['text', line.replace(/(<br>)$/, '')], ['br', '']];
   }
   return null;
 }
