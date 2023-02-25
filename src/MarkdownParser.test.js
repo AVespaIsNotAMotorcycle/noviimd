@@ -62,7 +62,6 @@ describe('headers', () => {
 })
 
 describe('paragraphs', () => {
-/*
   test('create 2 p tags', () => {
     const md = `one\ntwo\n\nthree\nfour`;
     render(<MarkdownParser md={md} />);
@@ -105,58 +104,66 @@ describe('paragraphs', () => {
     });
     expect(hasbr).toBe(true);
   });
-*/
+
+  test('three p tags', () => {
+    const md = `Lorem\n\nipsum\n\ndolor sit amet`;
+    render(<MarkdownParser md={md} />);
+    screen.getByText('Lorem');
+    screen.getByText('ipsum');
+    screen.getByText('dolor sit amet');
+  });
+
   test('bold text with __', () => {
-    const md = `Lorem ipsem __dolor__ sit amet`;
+    const md = `Lorem ipsum __dolor__ sit amet`;
     render(<MarkdownParser md={md} />);
     const bold = screen.getByText('dolor');
     expect(bold.nodeName).toBe('STRONG');
   })
 
   test('bold text with **', () => {
-    const md = `Lorem ipsem **dolor** sit amet`;
+    const md = `Lorem ipsum **dolor** sit amet`;
     render(<MarkdownParser md={md} />);
     const bold = screen.getByText('dolor');
     expect(bold.nodeName).toBe('STRONG');
   })
 
   test('bold text within a word with __', () => {
-    const md = `Lorem ipsem d__olo__r sit amet`;
+    const md = `Lorem ipsum d__olo__r sit amet`;
     render(<MarkdownParser md={md} />);
     const bold = screen.getByText('olo');
     expect(bold.nodeName).toBe('STRONG');
   })
 
   test('bold text within a word with **', () => {
-    const md = `Lorem ipsem d**olo**r sit amet`;
+    const md = `Lorem ipsum d**olo**r sit amet`;
     render(<MarkdownParser md={md} />);
     const bold = screen.getByText('olo');
     expect(bold.nodeName).toBe('STRONG');
   })
 
   test('italic text with __', () => {
-    const md = `Lorem ipsem _dolor_ sit amet`;
+    const md = `Lorem ipsum _dolor_ sit amet`;
     render(<MarkdownParser md={md} />);
     const italic = screen.getByText('dolor');
     expect(italic.nodeName).toBe('EM');
   })
 
   test('italic text with **', () => {
-    const md = `Lorem ipsem *dolor* sit amet`;
+    const md = `Lorem ipsum *dolor* sit amet`;
     render(<MarkdownParser md={md} />);
     const italic = screen.getByText('dolor');
     expect(italic.nodeName).toBe('EM');
   })
 
   test('italic text within a word with __', () => {
-    const md = `Lorem ipsem d_olo_r sit amet`;
+    const md = `Lorem ipsum d_olo_r sit amet`;
     render(<MarkdownParser md={md} />);
     const italic = screen.getByText('olo');
     expect(italic.nodeName).toBe('EM');
   })
 
   test('italic text within a word with **', () => {
-    const md = `Lorem ipsem d*olo*r sit amet`;
+    const md = `Lorem ipsum d*olo*r sit amet`;
     render(<MarkdownParser md={md} />);
     const italic = screen.getByText('olo');
     expect(italic.nodeName).toBe('EM');
@@ -172,7 +179,7 @@ describe('paragraphs', () => {
   })
 
   test('mixed italic/bold with *', () => {
-    const md = `Lorem ipsem **d*olo*r** sit amet`;
+    const md = `Lorem ipsum **d*olo*r** sit amet`;
     render(<MarkdownParser md={md} />);
     const bold1 = screen.getByText('d');
     const italic = screen.getByText('olo');

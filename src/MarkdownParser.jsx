@@ -46,12 +46,17 @@ function interpretEmphasis(line) {
       if (!inStr && inEm) {
         tags.push(['em', lastText]);
       }
+      if (!inStr && !inEm) {
+        tags.push(['text', lastText]);
+      }
       if (seg === '!EM!') { inEm = !inEm; }
       if (seg === '!ST!') { inStr = !inStr; }
+      lastText = '';
     } else {
       lastText = seg;
     }
   });
+  if (lastText) { tags.push(['text', lastText]); }
   if (tags.length > 0) { return tags; }
   return null;
 }
@@ -100,14 +105,14 @@ function processIntertags(intertags) {
   intertags.forEach((intertag, index) => {
     switch (intertag[0]) {
       case 'end-para':
-        tags.push(condenseParagraph(intertags.splice(0, index), index));
+        tags.push(condenseParagraph(intertags.slice(0, index), index));
         break;
       case 'h2-alt':
-        tags.push(condenseParagraph(intertags.splice(0, index - 1), index - 1));
+        tags.push(condenseParagraph(intertags.slice(0, index - 1), index - 1));
         tags.push(<h2 key={`h2-${index - 1}`}>{intertags[index - 1][1]}</h2>);
         break;
       case 'h1-alt':
-        tags.push(condenseParagraph(intertags.splice(0, index - 1), index - 1));
+        tags.push(condenseParagraph(intertags.slice(0, index - 1), index - 1));
         tags.push(<h1 key={`h1-${index - 1}`}>{intertags[index - 1][1]}</h1>);
         break;
       case 'h6':
