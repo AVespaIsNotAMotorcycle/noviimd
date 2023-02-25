@@ -120,7 +120,7 @@ function processIntertags(intertags) {
         tags.push(<h4 key={`h4-${toKey(intertag[1])}`}>{intertag[1]}</h4>);
         break;
       case 'h3':
-        tags.push(<h3 key={`h3-${toKey()}`}>{intertag[1]}</h3>);
+        tags.push(<h3 key={`h3-${toKey(intertag[1])}`}>{intertag[1]}</h3>);
         break;
       case 'h2':
         tags.push(<h2 key={`h2-${toKey(intertag[1])}`}>{intertag[1]}</h2>);
