@@ -190,3 +190,38 @@ describe('paragraphs', () => {
     expect(bold2.nodeName).toBe('STRONG');
   })
 });
+
+describe('lists', () => {
+  test('unordered list with -', () => {
+    const md = `- First\n- Second\n- Third`;
+    render(<MarkdownParser md={md} />);
+    const bullet1 = screen.getByText('First');
+    const bullet2 = screen.getByText('Second');
+    const bullet3 = screen.getByText('Third');
+    expect(bullet1.nodeName).toBe('LI');
+    expect(bullet2.nodeName).toBe('LI');
+    expect(bullet3.nodeName).toBe('LI');
+  });
+
+  test('unordered list with *', () => {
+    const md = `* First\n* Second\n* Third`;
+    render(<MarkdownParser md={md} />);
+    const bullet1 = screen.getByText('First');
+    const bullet2 = screen.getByText('Second');
+    const bullet3 = screen.getByText('Third');
+    expect(bullet1.nodeName).toBe('LI');
+    expect(bullet2.nodeName).toBe('LI');
+    expect(bullet3.nodeName).toBe('LI');
+  });
+
+  test('unordered list with +', () => {
+    const md = `+ First\n+ Second\n+ Third`;
+    render(<MarkdownParser md={md} />);
+    const bullet1 = screen.getByText('First');
+    const bullet2 = screen.getByText('Second');
+    const bullet3 = screen.getByText('Third');
+    expect(bullet1.nodeName).toBe('LI');
+    expect(bullet2.nodeName).toBe('LI');
+    expect(bullet3.nodeName).toBe('LI');
+  });
+});

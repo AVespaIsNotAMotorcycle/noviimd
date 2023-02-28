@@ -61,9 +61,16 @@ function interpretEmphasis(line) {
   return null;
 }
 
+function interpretList(line) {
+  const ulRegex = /^[ ]*[-+*]{1}[ ]+/;
+  if (line.search(ulRegex) !== -1) { return [['ul', line.replace(ulRegex, '')]]; }
+  return null;
+}
+
 function interpretLine(line) {
   if (interpretHeader(line)) { return interpretHeader(line); }
   if (interpretPara(line)) { return interpretPara(line); }
+  if (interpretList(line)) { return interpretList(line); }
   if (interpretEmphasis(line)) { return interpretEmphasis(line); }
   return [['text', line]];
 }
@@ -104,6 +111,9 @@ function processIntertags(intertags) {
   const tags = [];
   intertags.forEach((intertag, index) => {
     switch (intertag[0]) {
+      case 'ul':
+        tags.push(<li key={`ul-${toKey(intertag[1])}`}>{intertag[1]}</li>);
+        break;
       case 'end-para':
         tags.push(condenseParagraph(intertags.slice(0, index), index));
         break;

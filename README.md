@@ -10,6 +10,9 @@ A markdown parser for React. Implementing the syntax defined at https://www.mark
   - [ ] Allow escaping of \* \*\* \_ and \_\_
 - [ ] Blockquotes
 - [ ] Lists
+  - [X] Unordered lists
+  - [ ] Ordered lists
+  - [ ] Indented blocks and sub lists
 - [ ] Code
 - [ ] Horizontal rules
 - [ ] Links
