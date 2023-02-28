@@ -11,6 +11,7 @@ function App() {
     <div className="flex-container">
       <div className="flex-item">
         <TextField
+          className="content textarea"
           onChange={(e) => {
             setMarkdown(e.target.value);
           }}
@@ -19,7 +20,9 @@ function App() {
       </div>
       <div className="flex-divider" />
       <div className="flex-item">
-        <MarkdownParser md={markdown} />
+        <div className="content scroll">
+          <MarkdownParser md={markdown} />
+        </div>
       </div>
     </div>
   );
