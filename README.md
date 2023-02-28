@@ -18,7 +18,7 @@ A markdown parser for React. Implementing the syntax defined at https://www.mark
 - [ ] Code
 - [ ] Horizontal rules
 - [ ] Links
-  - [X] Links with the []() format
+  - [X] Links with the \[\]\(\) format
   - [ ] Links with the <> format
   - [ ] Emphasis on links
   - [ ] Links as code
