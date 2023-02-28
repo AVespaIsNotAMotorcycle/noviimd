@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import MarkdownParser from './MarkdownParser';
-
+/*
 describe('headers', () => {
   const lineContent = 'Lorem ipsum';
 
@@ -112,7 +112,9 @@ describe('paragraphs', () => {
     screen.getByText('ipsum');
     screen.getByText('dolor sit amet');
   });
+});
 
+describe('emphasis', () => {
   test('bold text with __', () => {
     const md = `Lorem ipsum __dolor__ sit amet`;
     render(<MarkdownParser md={md} />);
@@ -241,5 +243,72 @@ describe('links', () => {
     expect(linkOne.nodeName).toBe('A');
     const linkTwo = screen.getByText('github');
     expect(linkTwo.nodeName).toBe('A');
+  });
+});
+*/
+describe('blockquotes', () => {
+  test('create 2 p tags', () => {
+    const md = `> one\ntwo\n\n> three\nfour`;
+    render(<MarkdownParser md={md} />);
+    const p11 = screen.getByText(/one/);
+    const p12 = screen.getByText(/two/);
+    const p21 = screen.getByText(/three/);
+    const p22 = screen.getByText(/four/);
+    expect(p11.parentElement.nodeName).toBe('BLOCKQUOTE');
+    expect(p12.parentElement.nodeName).toBe('BLOCKQUOTE');
+    expect(p21.parentElement.nodeName).toBe('BLOCKQUOTE');
+    expect(p22.parentElement.nodeName).toBe('BLOCKQUOTE');
+  });
+
+  test('one p tag w br via spaces', () => {
+    const md = `> one\ntwo  \nthree\nfour`;
+    render(<MarkdownParser md={md} />);
+    const p22 = screen.getByText(/four/);
+    expect(p22.parentElement.nodeName).toBe('BLOCKQUOTE');
+  });
+
+  test('one p tag w br via <br>', () => {
+    const md = `> one\ntwo<br>\nthree\nfour`;
+    render(<MarkdownParser md={md} />);
+    const p22 = screen.getByText(/four/);
+    expect(p22.parentElement.nodeName).toBe('BLOCKQUOTE');
+  });
+
+  test('three p tags', () => {
+    const md = `> Lorem\n\n> ipsum\n\n> dolor sit amet`;
+    render(<MarkdownParser md={md} />);
+    expect(screen.getByText('Lorem').parentElement.nodeName).toBe('BLOCKQUOTE');
+    expect(screen.getByText('ipsum').parentElement.nodeName).toBe('BLOCKQUOTE');
+    expect(screen.getByText('dolor sit amet').parentElement.nodeName).toBe('BLOCKQUOTE');
+  });
+
+  test('header tag in block quotes', () => {
+    const md = `
+> ###### This is a header6 block quote
+> ##### This is a header5 block quote
+> #### This is a header4 block quote
+> ### This is a header3 block quote
+> ## This is a header2 block quote
+> # This is a header1 block quote
+`;
+    render(<MarkdownParser md={md} />);
+    const h6 = screen.getByText('This is a header6 block quote');
+    expect(h6.nodeName).toBe('H6');
+    expect(h6.parentElement.nodeName).toBe('BLOCKQUOTE');
+    const h5 = screen.getByText('This is a header5 block quote');
+    expect(h5.nodeName).toBe('H5');
+    expect(h5.parentElement.nodeName).toBe('BLOCKQUOTE');
+    const h4 = screen.getByText('This is a header4 block quote');
+    expect(h4.nodeName).toBe('H4');
+    expect(h4.parentElement.nodeName).toBe('BLOCKQUOTE');
+    const h3 = screen.getByText('This is a header3 block quote');
+    expect(h3.nodeName).toBe('H3');
+    expect(h3.parentElement.nodeName).toBe('BLOCKQUOTE');
+    const h2 = screen.getByText('This is a header2 block quote');
+    expect(h2.nodeName).toBe('H2');
+    expect(h2.parentElement.nodeName).toBe('BLOCKQUOTE');
+    const h1 = screen.getByText('This is a header1 block quote');
+    expect(h1.nodeName).toBe('H1');
+    expect(h1.parentElement.nodeName).toBe('BLOCKQUOTE');
   });
 });

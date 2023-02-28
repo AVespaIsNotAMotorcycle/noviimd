@@ -8,7 +8,9 @@ A markdown parser for React. Implementing the syntax defined at https://www.mark
   - [x] Italic text
   - [X] Bold and italic text
   - [ ] Allow escaping of \* \*\* \_ and \_\_
-- [ ] Blockquotes
+- [X] Blockquotes
+  - [X] Paragraph content
+  - [X] Headers
 - [ ] Lists
   - [X] Unordered lists
   - [ ] Ordered lists

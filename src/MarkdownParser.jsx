@@ -6,18 +6,20 @@ function toKey(str) {
 
 function interpretHeader(line) {
   const preheader = ['end-para', ''];
-  if (line.search(/^[#]{6}/) !== -1) { return [preheader, ['h6', line.substring(6)]]; }
-  if (line.search(/^[#]{5}/) !== -1) { return [preheader, ['h5', line.substring(5)]]; }
-  if (line.search(/^[#]{4}/) !== -1) { return [preheader, ['h4', line.substring(4)]]; }
-  if (line.search(/^[#]{3}/) !== -1) { return [preheader, ['h3', line.substring(3)]]; }
-  if (line.search(/^[#]{2}/) !== -1) { return [preheader, ['h2', line.substring(2)]]; }
-  if (line.search(/^[#]{1}/) !== -1) { return [preheader, ['h1', line.substring(1)]]; }
-  if (line.search(/^[ ]*[=]+[= \r\n]*$/) !== -1) { return [['h1-alt', '']]; }
-  if (line.search(/^[ ]*[-]+[- \r\n]*$/) !== -1) { return [['h2-alt', '']]; }
+  const trimline = line.replace(/^[ ]*/g, '');
+  if (trimline.search(/^[#]{6}/) !== -1) { return [preheader, ['h6', trimline.substring(6)]]; }
+  if (trimline.search(/^[#]{5}/) !== -1) { return [preheader, ['h5', trimline.substring(5)]]; }
+  if (trimline.search(/^[#]{4}/) !== -1) { return [preheader, ['h4', trimline.substring(4)]]; }
+  if (trimline.search(/^[#]{3}/) !== -1) { return [preheader, ['h3', trimline.substring(3)]]; }
+  if (trimline.search(/^[#]{2}/) !== -1) { return [preheader, ['h2', trimline.substring(2)]]; }
+  if (trimline.search(/^[#]{1}/) !== -1) { return [preheader, ['h1', trimline.substring(1)]]; }
+  if (trimline.search(/^[ ]*[=]+[= \r\n]*$/) !== -1) { return [['h1-alt', '']]; }
+  if (trimline.search(/^[ ]*[-]+[- \r\n]*$/) !== -1) { return [['h2-alt', '']]; }
   return null;
 }
 
 function interpretPara(line) {
+  if (line.search(/^>[ ]*$/) !== -1) { return [['start-block', '']]; }
   if (line.search(/^\s*$/) !== -1) { return [['end-para', '']]; }
   if (line.search(/( ){2}$/) !== -1
      || line.search(/(<br>)$/) !== -1) {
@@ -56,7 +58,7 @@ function interpretEmphasis(line) {
       lastText = seg;
     }
   });
-  if (lastText) { tags.push(['text', lastText]); }
+  if (lastText) { tags.push(['text', lastText.concat(' ')]); }
   if (tags.length > 0) { return tags; }
   return null;
 }
@@ -87,10 +89,10 @@ function interpretLine(line) {
   if (interpretList(line)) { return interpretList(line); }
   if (interpretLink(line)) { return interpretLink(line); }
   if (interpretEmphasis(line)) { return interpretEmphasis(line); }
-  return [['text', line]];
+  return [['text', line.concat(' ')]];
 }
 
-const PARA_CONTENT = ['text', 'br', 'stem', 'st', 'em', 'a'];
+const PARA_CONTENT = ['text', 'br', 'stem', 'st', 'em', 'a', 'start-block'];
 function condenseParagraph(tags, index) {
   const lines = [];
   for (
@@ -100,6 +102,14 @@ function condenseParagraph(tags, index) {
   ) {
     const line = tags[i];
     switch (line[0]) {
+      case 'start-block':
+        return (
+          <blockquote key={`block-${index}`}>
+            <p>
+              {lines.reverse()}
+            </p>
+          </blockquote>
+        );
       case 'a':
         lines.push(
           <a
@@ -133,10 +143,25 @@ function condenseParagraph(tags, index) {
   return <p key={`p-${index}`}>{lines.reverse()}</p>;
 }
 
-function processIntertags(intertags) {
+function processIntertags(inter) {
+  const intertags = inter;
   const tags = [];
   intertags.forEach((intertag, index) => {
     switch (intertag[0]) {
+      case 'raw-html':
+        tags.push(intertag[1]);
+        break;
+      case 'start-block':
+        if (intertags[index + 2][0][0] === 'h') {
+          intertags[index + 2] = [
+            'raw-html',
+            <blockquote key={`blockheader-${toKey(intertags[index + 2][1])}`}>
+              {processIntertags([intertags[index + 2]])}
+            </blockquote>,
+          ];
+          intertags[index] = ['text', ''];
+        }
+        break;
       case 'ul':
         tags.push(<li key={`ul-${toKey(intertag[1])}`}>{intertag[1]}</li>);
         break;
@@ -176,7 +201,8 @@ function processIntertags(intertags) {
 }
 
 function MarkdownParser({ md }) {
-  const linkmd = md.replace(/\[.+?\]\(.+?\)/gim, '\n$&\n');
+  const blockmd = md.replace(/\n>/g, '\n>\n').replace(/^>/g, '>\n');
+  const linkmd = blockmd.replace(/\[.+?\]\(.+?\)/gim, '\n$&\n');
   const lines = linkmd.split('\n');
   const intertags = [];
   lines.forEach((line, index) => {
