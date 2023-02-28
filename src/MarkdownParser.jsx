@@ -19,7 +19,7 @@ function interpretHeader(line) {
 }
 
 function interpretPara(line) {
-  if (line.search(/^>[ ]*$/) !== -1) { return [['start-block', '']]; }
+  if (line.search(/^>[ ]*$/) !== -1) { return [['end-para', ''], ['start-block', '']]; }
   if (line.search(/^\s*$/) !== -1) { return [['end-para', '']]; }
   if (line.search(/( ){2}$/) !== -1
      || line.search(/(<br>)$/) !== -1) {
@@ -65,7 +65,7 @@ function interpretEmphasis(line) {
 
 function interpretList(line) {
   const ulRegex = /^[ ]*[-+*]{1}[ ]+/;
-  if (line.search(ulRegex) !== -1) { return [['ul', line.replace(ulRegex, '')]]; }
+  if (line.search(ulRegex) !== -1) { return [['end-para', ''], ['ul', line.replace(ulRegex, '')]]; }
   return null;
 }
 
