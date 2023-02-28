@@ -225,3 +225,21 @@ describe('lists', () => {
     expect(bullet3.nodeName).toBe('LI');
   });
 });
+
+describe('links', () => {
+  test('link w/o title', () => {
+    const md = `Here's a link: [www.samuelmebersole.com](https://www.samuelmebersole.com)`;
+    render(<MarkdownParser md={md} />);
+    const link = screen.getByText('www.samuelmebersole.com');
+    expect(link.nodeName).toBe('A');
+  });
+
+  test('multiple links w/o title in one line', () => {
+    const md = `Link one: [google](https://www.google.com) link two: [github](https://www.github.com)`
+    render(<MarkdownParser md={md} />);
+    const linkOne = screen.getByText('google');
+    expect(linkOne.nodeName).toBe('A');
+    const linkTwo = screen.getByText('github');
+    expect(linkTwo.nodeName).toBe('A');
+  });
+});

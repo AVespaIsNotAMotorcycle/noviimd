@@ -67,15 +67,30 @@ function interpretList(line) {
   return null;
 }
 
+function interpretLink(line) {
+  if (line.search(/^\[.+?\]\(.+?\)$/) !== -1) {
+    return [[
+      'a',
+      [
+        line.match(/^\[.+?\]/)[0].replace(/[[\]]/g, ''),
+        line.match(/\(.+?\)$/)[0].replace(/[()]|( ".+?")/g, ''),
+        line.match(/\(.+?\)$/)[0].replace(/(.+? ")|("[ ]*\))/g, ''),
+      ],
+    ]];
+  }
+  return null;
+}
+
 function interpretLine(line) {
   if (interpretHeader(line)) { return interpretHeader(line); }
   if (interpretPara(line)) { return interpretPara(line); }
   if (interpretList(line)) { return interpretList(line); }
+  if (interpretLink(line)) { return interpretLink(line); }
   if (interpretEmphasis(line)) { return interpretEmphasis(line); }
   return [['text', line]];
 }
 
-const PARA_CONTENT = ['text', 'br', 'stem', 'st', 'em'];
+const PARA_CONTENT = ['text', 'br', 'stem', 'st', 'em', 'a'];
 function condenseParagraph(tags, index) {
   const lines = [];
   for (
@@ -85,6 +100,17 @@ function condenseParagraph(tags, index) {
   ) {
     const line = tags[i];
     switch (line[0]) {
+      case 'a':
+        lines.push(
+          <a
+            key={`a-${i}`}
+            href={line[1][1]}
+            title={line[1][2]}
+          >
+            {line[1][0]}
+          </a>,
+        );
+        break;
       case 'stem':
         lines.push(<em key={`em-${i}`}><strong>{line[1]}</strong></em>);
         break;
@@ -150,7 +176,8 @@ function processIntertags(intertags) {
 }
 
 function MarkdownParser({ md }) {
-  const lines = md.split('\n');
+  const linkmd = md.replace(/\[.+?\]\(.+?\)/gim, '\n$&\n');
+  const lines = linkmd.split('\n');
   const intertags = [];
   lines.forEach((line, index) => {
     const linetags = interpretLine(line, index);
