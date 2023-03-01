@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/noviimd/static/css/main.8d04118d.css",
+    "main.js": "/noviimd/static/js/main.a94ba02f.js",
+    "static/js/787.e4650dfd.chunk.js": "/noviimd/static/js/787.e4650dfd.chunk.js",
+    "index.html": "/noviimd/index.html",
+    "main.8d04118d.css.map": "/noviimd/static/css/main.8d04118d.css.map",
+    "main.a94ba02f.js.map": "/noviimd/static/js/main.a94ba02f.js.map",
+    "787.e4650dfd.chunk.js.map": "/noviimd/static/js/787.e4650dfd.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8d04118d.css",
+    "static/js/main.a94ba02f.js"
+  ]
+}
