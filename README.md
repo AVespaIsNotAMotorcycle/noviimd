@@ -3,11 +3,11 @@ A markdown parser for React. Implementing the syntax defined at https://www.mark
 - [X] Headings
 - [X] Paragraphs
 - [X] Line breaks
-- [ ] Emphasis
+- [X] Emphasis
   - [X] Bold text
   - [x] Italic text
   - [X] Bold and italic text
-  - [ ] Allow escaping of \* \*\* \_ and \_\_
+  - [X] Allow escaping of \* \*\* \_ and \_\_
 - [X] Blockquotes
   - [X] Paragraph content
   - [X] Headers

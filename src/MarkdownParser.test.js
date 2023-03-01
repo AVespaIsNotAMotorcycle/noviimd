@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import MarkdownParser from './MarkdownParser';
-/*
+
 describe('headers', () => {
   const lineContent = 'Lorem ipsum';
 
@@ -191,6 +191,34 @@ describe('emphasis', () => {
     expect(italic.parentElement.nodeName).toBe('EM');
     expect(bold2.nodeName).toBe('STRONG');
   })
+
+  test('can escape *', () => {
+    const md = `this \\*is\\* a sentence`;
+    render(<MarkdownParser md={md} />);
+    const text = screen.getByText(`this *is* a sentence`);
+    expect(text.nodeName).toBe('P');
+  });
+
+  test('can escape _', () => {
+    const md = `this \\_is\\_ a sentence`;
+    render(<MarkdownParser md={md} />);
+    const text = screen.getByText(`this _is_ a sentence`);
+    expect(text.nodeName).toBe('P');
+  });
+
+  test('can escape **', () => {
+    const md = `this \\*\\*is\\*\\* a sentence`;
+    render(<MarkdownParser md={md} />);
+    const text = screen.getByText(`this **is** a sentence`);
+    expect(text.nodeName).toBe('P');
+  });
+
+  test('can escape __', () => {
+    const md = `this \\_\\_is\\_\\_ a sentence`;
+    render(<MarkdownParser md={md} />);
+    const text = screen.getByText(`this __is__ a sentence`);
+    expect(text.nodeName).toBe('P');
+  });
 });
 
 describe('lists', () => {
@@ -245,7 +273,7 @@ describe('links', () => {
     expect(linkTwo.nodeName).toBe('A');
   });
 });
-*/
+
 describe('blockquotes', () => {
   test('create 2 p tags', () => {
     const md = `> one\ntwo\n\n> three\nfour`;

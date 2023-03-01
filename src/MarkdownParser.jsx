@@ -30,8 +30,12 @@ function interpretPara(line) {
 
 function interpretEmphasis(line) {
   let markedLine = line;
+  markedLine = markedLine.replace(/\\\*/g, '$!AST!$');
+  markedLine = markedLine.replace(/\\_/g, '$!UND!$');
   markedLine = markedLine.replace(/(__|\*\*)/g, '$!ST!$');
   markedLine = markedLine.replace(/(_|\*)/g, '$!EM!$');
+  markedLine = markedLine.replaceAll('$!AST!$', '*');
+  markedLine = markedLine.replaceAll('$!UND!$', '_');
   const segments = markedLine.split('$');
   const tags = [];
   let inStr = false;
