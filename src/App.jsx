@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
-import MarkdownParser from './MarkdownParser';
+import MarkdownParser from './lib';
 import TextField from './TextField';
 
 function App() {
