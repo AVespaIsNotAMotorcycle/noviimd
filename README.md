@@ -1,5 +1,11 @@
 A markdown parser for React. Implementing the syntax defined at https://www.markdownguide.org/basic-syntax/
 
+Install via `npm install noviimd`
+
+`import NoviiMD from 'noviimd'
+
+<NoviiMD md={your markdown here} />`
+
 - [X] Headings
 - [X] Paragraphs
 - [X] Line breaks
