@@ -2,7 +2,10 @@
   "name": "noviimd",
   "homepage": "https://noviimd.samuelmebersole.com",
   "version": "0.1.0",
-  "private": true,
+  "description": "A markdown parser for React",
+  "entry point": "(index.js)",
+  "license": "(MIT)",
+  "git repository": "https://github.com/AVespaIsNotAMotorcycle/noviimd",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^13.5.0",
